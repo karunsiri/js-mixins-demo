@@ -35,4 +35,12 @@ class Person extends Imageable {
   }
 }
 
-window.Person = Person
+class Programmer extends Person {
+  constructor () {
+    super()
+    console.log('Hello from Programmer class')
+    this.job_title = 'Programmer'
+  }
+}
+
+window.Programmer = Programmer
