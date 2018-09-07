@@ -1,6 +1,34 @@
-class Imageable {
+// ===============================================
+// Mixin Factory
+// ===============================================
+
+let mix = (klass) => new MixinFactory(klass)
+
+class MixinFactory {
+  constructor (klass) {
+    this.superClass = klass
+  }
+
+  with (...mixins) {
+    // Think ruby array#inject { |mixedClass, member| ... } here
+    return mixins.reduce(
+      (mixedClass, mixin) => {
+        return mixin(mixedClass)
+      },
+      this.superClass
+    )
+  }
+}
+
+// ===============================================
+// Mixins
+// ===============================================
+
+let Imageable = (klass) => class extends klass {
   constructor () {
+    super()
     this.image = null
+    console.log('Image attribute is now available')
   }
 
   setImage (url) {
@@ -9,9 +37,11 @@ class Imageable {
   }
 }
 
-class Taggable {
+let Taggable = (klass) => class extends klass {
   constructor () {
+    super()
     this.tags = []
+    console.log('Tags attribute is now available')
   }
 
   addTag (tag) {
@@ -24,22 +54,20 @@ class Taggable {
   }
 }
 
-class Person extends Imageable {
-  constructor (name) {
-    super()
-    this.name = name
-  }
+// =================================================================
 
-  setName (name) {
+class Person {
+  constructor (name) {
     this.name = name
+    console.log('name has been set')
   }
 }
 
-class Programmer extends Person {
-  constructor () {
+class Programmer extends mix(Person).with(Taggable, Imageable) {
+  constructor (name) {
     super()
-    console.log('Hello from Programmer class')
-    this.job_title = 'Programmer'
+    this.name = name
+    console.log("Hello, I'm a programmer!")
   }
 }
 
